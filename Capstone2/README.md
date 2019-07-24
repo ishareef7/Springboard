@@ -1,7 +1,14 @@
 Capstone2
 ==============================
 
-Music Genre Classification using Deep Learning
+Music Genre Classification using Deep Learning (Currently in development)
+
+The goal of this project is to create a neural network using Python that is designed to take audio
+features of a MP3 file and predict the musical genre of the track. This can be especially useful for
+streaming platforms that allow users to listen to their music files in their applications that may have
+incomplete metadata, such as Soundcloud. For applications where classify this exact track is the end
+goal, this model can be incorporated into a larger model/algorithm to increase its accuracy and
+efficiency.
 
 Project Organization
 ------------
