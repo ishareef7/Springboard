@@ -16,7 +16,7 @@ tracks_path = os.path.join(data_file_path, 'tracks.csv')
 genres_path = os.path.join(data_file_path, 'genres.csv')
 
 
-def get_features(file_path = features_path):
+def get_features():
     """Return pandas dataframe from features.csv"""
 
     # read csv file
@@ -25,7 +25,7 @@ def get_features(file_path = features_path):
     return features
 
 
-def get_echonest(file_path = echonest_path):
+def get_echonest():
     """Return pandas dataframe from echonest.csv"""
 
     # read csv file
@@ -34,7 +34,7 @@ def get_echonest(file_path = echonest_path):
     return echonest
 
 
-def get_tracks(file_path = tracks_path):
+def get_tracks():
     """Return pandas dataframe from tracks.csv"""
 
     # read csv file
@@ -42,7 +42,8 @@ def get_tracks(file_path = tracks_path):
 
     return tracks
 
-def get_genres(file_path = features_path):
+
+def get_genres(file_path=features_path):
     """Return pandas dataframe from features.csv"""
 
     # read csv file
@@ -50,61 +51,94 @@ def get_genres(file_path = features_path):
 
     return genres
 
-#load dataframes
-features = get_features()
-echonest = get_echonest()
-tracks = get_tracks()
-genres = get_genres()
-
-#Correct lists that were loded into the dataset as strings
-tracks['track','genres'] = tracks['track','genres'].apply(lambda x: ast.literal_eval(x))
-
-#Get relevant colmuns from tracks
-idx = pd.IndexSlice
-track_info = tracks.loc[:, idx[['set','track'], ['duration','split', 'subset','genre_top','genres']]].copy()
-track_info.columns = track_info.columns.droplevel(0)
-
-#Create masks used to access rows of track_info where 'genre_top' is null and there is a genre in 'genres'
-null_mask = track_info['genre_top'].isnull().copy()
-null_genres = track_info[null_mask]
-empty_mask = [len(x)>0 for x in  null_genres['genres']]
-null_genres = null_genres[empty_mask]
-
-#Handle rows were 'genre_top' is blannk and infer genre from the first entry in 'genres'
-genre_dict = dict(genres['title'])
-null_genres['genre_top'] = null_genres['genres'].apply(lambda x: x[0])
-top_genres = [ genre_dict[x] for x in null_genres['genre_top'].values]
-track_info.loc[null_genres.index, 'genre_top']  = top_genres
-
-#Map all rows to their top level genre
-top_genre_dict = dict(zip(genres['title'], genres['top_level']))
-track_info['genre_top'] = track_info['genre_top'].map(top_genre_dict)
-
-#Get numerical echnoest features
-echonest_features = echonest.loc[:, idx[['audio_features', 'temporal_features'],:]]
-
-#Flatten Indexes
-features.columns = ['_'.join(col).strip('_') for col in features.columns.values]
-echonest_features.columns = ['_'.join(col).rstrip('_') for col in echonest_features.columns.values]
-
-
-dataset_echonest = features.join(echonest_features, how = 'inner').join(track_info, how = 'inner')
-dataset_no_echnoest = features.join(track_info, how = 'inner').dropna()
-
-dataset_echonest['genre_top'] = dataset_echonest['genre_top'].astype('int64')
-dataset_no_echnoest['genre_top'] =dataset_no_echnoest['genre_top'].astype('int64')
 
 def get_dataset_echonest():
-    """Return dataset that contains collumns for echonest features this dataset only contains 13,129 rows """
+    """Wrangle data for dataset containing echonest features and return dataframe"""
+    # load dataframes
+    features = get_features()
+    echonest = get_echonest()
+    tracks = get_tracks()
+    genres = get_genres()
+
+    # Correct lists that were loded into the dataset as strings
+    tracks['track', 'genres'] = tracks['track', 'genres'].apply(lambda x: ast.literal_eval(x))
+
+    # Get relevant colmuns from tracks
+    idx = pd.IndexSlice
+    track_info = tracks.loc[:, idx[['set', 'track'], ['duration', 'split', 'subset', 'genre_top', 'genres']]].copy()
+    track_info.columns = track_info.columns.droplevel(0)
+
+    # Create masks used to access rows of track_info where 'genre_top' is null and there is a genre in 'genres'
+    null_mask = track_info['genre_top'].isnull().copy()
+    null_genres = track_info[null_mask]
+    empty_mask = [len(x) > 0 for x in null_genres['genres']]
+    null_genres = null_genres[empty_mask]
+
+    # Handle rows were 'genre_top' is blannk and infer genre from the first entry in 'genres'
+    genre_dict = dict(genres['title'])
+    null_genres['genre_top'] = null_genres['genres'].apply(lambda x: x[0])
+    top_genres = [genre_dict[x] for x in null_genres['genre_top'].values]
+    track_info.loc[null_genres.index, 'genre_top'] = top_genres
+
+    # Map all rows to their top level genre
+    top_genre_dict = dict(zip(genres['title'], genres['top_level']))
+    track_info['genre_top'] = track_info['genre_top'].map(top_genre_dict)
+
+    # Get numerical echnoest features
+    echonest_features = echonest.loc[:, idx[['audio_features', 'temporal_features'], :]]
+
+    # Flatten Indexes
+    features.columns = ['_'.join(col).strip('_') for col in features.columns.values]
+    echonest_features.columns = ['_'.join(col).rstrip('_') for col in echonest_features.columns.values]
+    
+    dataset_echonest = features.join(echonest_features, how='inner').join(track_info, how='inner')
+    dataset_echonest['genre_top'] = dataset_echonest['genre_top'].astype('int64')
+
     return dataset_echonest
 
-def get_dataset():
-    """ Return dataset without echonest features this dataset contains 106,574 rows"""
-    return dataset_no_echnoest
+def get_dataset_no_echonest():
+    """Wrangle data for dataset without echonest features and return dataframe"""
+    # load dataframes
+    features = get_features()
+    tracks = get_tracks()
+    genres = get_genres()
+
+    # Correct lists that were loded into the dataset as strings
+    tracks['track', 'genres'] = tracks['track', 'genres'].apply(lambda x: ast.literal_eval(x))
+
+    # Get relevant colmuns from tracks
+    idx = pd.IndexSlice
+    track_info = tracks.loc[:, idx[['set', 'track'], ['duration', 'split', 'subset', 'genre_top', 'genres']]].copy()
+    track_info.columns = track_info.columns.droplevel(0)
+
+    # Create masks used to access rows of track_info where 'genre_top' is null and there is a genre in 'genres'
+    null_mask = track_info['genre_top'].isnull().copy()
+    null_genres = track_info[null_mask]
+    empty_mask = [len(x) > 0 for x in null_genres['genres']]
+    null_genres = null_genres[empty_mask]
+
+    # Handle rows were 'genre_top' is blannk and infer genre from the first entry in 'genres'
+    genre_dict = dict(genres['title'])
+    null_genres['genre_top'] = null_genres['genres'].apply(lambda x: x[0])
+    top_genres = [genre_dict[x] for x in null_genres['genre_top'].values]
+    track_info.loc[null_genres.index, 'genre_top'] = top_genres
+
+    # Map all rows to their top level genre
+    top_genre_dict = dict(zip(genres['title'], genres['top_level']))
+    track_info['genre_top'] = track_info['genre_top'].map(top_genre_dict)
 
 
-def process_dataset(df, validation = False):
-    """Extract and scale features of inpyted dataframe. Encode output labels and split into training and test sets"""
+    # Flatten Indexes
+    features.columns = ['_'.join(col).strip('_') for col in features.columns.values]
+
+    dataset_no_echnoest = features.join(track_info, how='inner').dropna()
+    dataset_no_echnoest['genre_top'] = dataset_no_echnoest['genre_top'].astype('int64')
+
+    return dataset_no_echonest
+
+
+def process_dataset(df, validation=False):
+    """Extract and scale features of inputed dataframe. Encode output labels and split into training and test sets"""
     features = df.iloc[:, :-5].columns
     y = df['genre_top']
 
