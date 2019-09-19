@@ -13,6 +13,7 @@ np.random.seed(17)
 
 
 def cnn(param_grid):
+    """Method for creating a CNN Keras model object with the parameters given by the the param_grid"""
     n_filters = param_grid['n_filters']
     filter_size = param_grid['filter_size']
     pool_size = param_grid['pool_size']
@@ -22,6 +23,7 @@ def cnn(param_grid):
     input_shape = param_grid['input_shape']
 
     model = Sequential()
+
     for i in range(n_cov_layers):
         model.add(Conv2D(filters=n_filters, kernel_size=filter_size, activation='relu',
                          input_shape=(input_shape[-3], input_shape[-2], 1), padding='same',
@@ -32,15 +34,16 @@ def cnn(param_grid):
         model.add(Dropout(dropout_rate, name='dropout_' + str(i)))
 
     model.add(Flatten(name='flatten'))
+
     model.add(Dense(n_dense_nodes, activation='relu', name='dense_1'))
     model.add(Dense(n_dense_nodes, activation='relu', name='dense_2'))
     model.add(Dense(8, activation='softmax', name='output'))
-
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     return model
 
 def crnn_parallel(param_grid):
+    """Method for creating a CRNN Keras model object with the parameters given by the the param_grid"""
     n_filters = param_grid['n_filters']
     filter_size = param_grid['filter_size']
     pool_size = param_grid['pool_size']
@@ -75,4 +78,3 @@ def crnn_parallel(param_grid):
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 
     return model
-`
