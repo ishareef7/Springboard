@@ -1,7 +1,7 @@
 Capstone2
 ==============================
 
-![alt text](https://github.com/ishareef7/Springboard/blob/master/Capstone1/Capstone1_Reports/title_slide.jpg "HOUSEHOLD ENERGY CONSUMPTION PREDICTION TOOL")
+![alt text](https://github.com/ishareef7/Springboard/blob/master/Capstone2/reports/figures/Capstone2_FinalPresentation_title.jpg "Music Genre Classification")
 
 Music Genre Classification
 
