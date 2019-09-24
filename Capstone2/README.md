@@ -1,14 +1,11 @@
 Capstone2
 ==============================
 
-Music Genre Classification using Deep Learning (Currently in development)
+![alt text](https://github.com/ishareef7/Springboard/blob/master/Capstone1/Capstone1_Reports/title_slide.jpg "HOUSEHOLD ENERGY CONSUMPTION PREDICTION TOOL")
 
-The goal of this project is to create a neural network using Python that is designed to take audio
-features of a MP3 file and predict the musical genre of the track. This can be especially useful for
-streaming platforms that allow users to listen to their music files in their applications that may have
-incomplete metadata, such as Soundcloud. For applications where classify this exact track is the end
-goal, this model can be incorporated into a larger model/algorithm to increase its accuracy and
-efficiency.
+Music Genre Classification
+
+The goal of this project is to create a machine learning model that is designed to take audio features of a MP3 file and predict the musical genre of the track.This project will use deep learning methods and traditional machine learning methods to build models for predicting the genre of a music track. In doing so, this project will explore the advantages and disadvantages of both approaches to determine the best solution.
 
 Project Organization
 ------------
@@ -17,8 +14,6 @@ Project Organization
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
     │
@@ -30,33 +25,27 @@ Project Organization
     │                         the creator's initials, and a short `-` delimited description, e.g.
     │                         `1.0-jqp-initial-data-exploration`.
     │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
     │   │
     │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
+    │   │   └── build_dataset.py
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
+    │   │   ├── dl_models.py
+    │   │   └── ensemble_models_model.py
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
     │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
+
 
 
 --------
